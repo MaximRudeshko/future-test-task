@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import Loader from '../Loader/Loader';
 import Table from '../Table/Table';
 import _ from 'lodash';
-import PersonDetails from '../PersonDetails/PersonDetails'
+import PersonDetails from '../PersonDetails/PersonDetails';
+import DataSelect from '../DataSelect/DataSelect'
 
  export default class App extends Component{
 
@@ -11,12 +12,13 @@ import PersonDetails from '../PersonDetails/PersonDetails'
     loading:true,
     sort: 'asc',
     sortField: 'id',
-    row:null
+    row:null,
+    dataSelected:false
   }
 
 
-  async componentDidMount(){
-    const response = await fetch('http://www.filltext.com/?rows=32&id={number|1000}&firstName={firstName}&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}');
+  async fetchData(url){
+    const response = await fetch(url);
     const data = await response.json();
     this.setState({
       data : _.orderBy(data, this.state.sortField, this.state.sort),
@@ -42,8 +44,25 @@ import PersonDetails from '../PersonDetails/PersonDetails'
     console.log(row)
   }
 
+  onDataSelected = (url) => {
+    this.setState({
+      dataSelected:true
+    })
+
+    this.fetchData(url)
+  }
+
 
   render(){
+    if(!this.state.dataSelected){
+      return(
+        <div className = 'container'>
+          <DataSelect onDataSelected = {this.onDataSelected}/>
+        </div>
+      )
+    }
+
+
     return (
       <div className = 'container'>
         {this.state.loading ?
