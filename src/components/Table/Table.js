@@ -7,8 +7,8 @@ const Table = (props) => {
     const arrowType = props.sort === 'desc' ? <i className='fa fa-arrow-down ml-1' aria-hidden="true"></i> : <i className='fa fa-arrow-up ml-1' aria-hidden="true"></i>;
 
     return (
-        <table className="table">
-            <thead className = 'thead-dark'>
+        <table className="table-bordered table table-hover">
+            <thead className = 'bg-primary'>
                 <tr>
                 <th onClick = {props.onSort.bind(null, 'id')}>ID{props.sortField === 'id' ? arrowType : null}</th>
                 <th onClick = {props.onSort.bind(null, 'firstName')}>First Name{props.sortField === 'firstName' ? arrowType : null}</th>

@@ -1,7 +1,17 @@
-.thead-dark th{
-    cursor:pointer
+table{
+    position: relative;
 }
 
-.thead-dark i{
+thead{
+   
+}
+
+thead th{
+    cursor:pointer;
+    user-select: none;
+    color:#fff;
+}
+
+.fa{
     font-size: 10px;
 }

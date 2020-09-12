@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
+import ReactPaginate from 'react-paginate'
 import Loader from '../Loader/Loader';
 import Table from '../Table/Table';
-import _ from 'lodash';
 import PersonDetails from '../PersonDetails/PersonDetails';
-import DataSelect from '../DataSelect/DataSelect'
+import DataSelect from '../DataSelect/DataSelect';
+import FilterPanel from '../FilterPanel/FilterPanel';
+
 
  export default class App extends Component{
 
@@ -13,7 +16,9 @@ import DataSelect from '../DataSelect/DataSelect'
     sort: 'asc',
     sortField: 'id',
     row:null,
-    dataSelected:false
+    dataSelected:false,
+    currentPage: 0,
+    search: ''
   }
 
 
@@ -41,7 +46,6 @@ import DataSelect from '../DataSelect/DataSelect'
 
   onRowSelect = row => {
     this.setState({row})
-    console.log(row)
   }
 
   onDataSelected = (url) => {
@@ -50,6 +54,34 @@ import DataSelect from '../DataSelect/DataSelect'
     })
 
     this.fetchData(url)
+  }
+
+  onPageChange = ({selected}) => {
+    this.setState({
+      currentPage:selected
+    })
+  }
+
+  onSearch = (str) => {
+    this.setState({
+      search: str,
+      currentPage: 0
+    })
+  }
+
+  onFilter = () => {
+    const {data , search} = this.state;
+
+    if(!search){
+      return data
+    }
+
+    return data.filter(item => {
+      return item['firstName'].toLowerCase().includes(search.toLowerCase())
+            || item['lastName'].toLowerCase().includes(search.toLowerCase())
+            || item['email'].toLowerCase().includes(search.toLowerCase())
+            || item['phone'].toLowerCase().includes(search.toLowerCase())
+    })
   }
 
 
@@ -62,18 +94,54 @@ import DataSelect from '../DataSelect/DataSelect'
       )
     }
 
+    const pageSize = 50;
+
+    const filteredData = this.onFilter()
+
+    const pageCount = Math.ceil(filteredData.length / pageSize)
+
+    const view = _.chunk(filteredData, pageSize)[this.state.currentPage]
 
     return (
       <div className = 'container'>
-        {this.state.loading ?
-           <Loader/> : <Table 
-                          data = {this.state.data} 
-                          onSort = {this.onSort}
-                          sort = {this.state.sort}
-                          sortField = {this.state.sortField}
-                          onRowSelect = {this.onRowSelect}
-                          />}
-        {this.state.row ? <PersonDetails person = {this.state.row}/> : null}
+        
+        {this.state.loading 
+          ? <Loader/> 
+          : <React.Fragment>
+              <FilterPanel onSearch = {this.onSearch}/>
+              <Table 
+                  data = {view} 
+                  onSort = {this.onSort}
+                  sort = {this.state.sort}
+                  sortField = {this.state.sortField}
+                  onRowSelect = {this.onRowSelect}
+              />
+            </React.Fragment>
+        }                 
+
+        {this.state.data.length > pageSize 
+          ? <ReactPaginate
+          previousLabel={'previous'}
+          nextLabel={'next'}
+          breakLabel={'...'}
+          breakClassName={'break-me'}
+          pageCount={pageCount}
+          marginPagesDisplayed={5}
+          pageRangeDisplayed={20}
+          onPageChange={this.onPageChange}
+          containerClassName={'pagination'}
+          activeClassName={'active'}
+          pageClassName={'page-item'}
+          pageLinkClassName={'page-link'}
+          previousClassName={'page-link'}
+          nextClassName={'page-link'}
+          forcePage = {this.state.currentPage}
+        /> : null
+        }          
+        
+        {this.state.row 
+          ? <PersonDetails person = {this.state.row}/> : null}
+
       </div>
     )
   }
