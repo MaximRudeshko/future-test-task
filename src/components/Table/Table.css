@@ -2,10 +2,6 @@ table{
     position: relative;
 }
 
-thead{
-   
-}
-
 thead th{
     cursor:pointer;
     user-select: none;
@@ -14,4 +10,8 @@ thead th{
 
 .fa{
     font-size: 10px;
+}
+
+.pagination{
+    justify-content: center;
 }

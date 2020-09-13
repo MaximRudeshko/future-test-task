@@ -1,0 +1,23 @@
+.input-group__wrapper{
+    overflow: hidden;
+    flex: 0 0 90%;
+}
+
+.input-group{
+    /* transform:translateX(-101%); */
+    transition: all .2s ease;
+}
+
+.input-group.active{
+    transform:translateX(0)
+}
+
+.search{
+    font-size: 30px;
+    color:#007bff;
+    cursor:pointer;
+    display: block;
+}
+.search.hide{
+    display: none;
+}

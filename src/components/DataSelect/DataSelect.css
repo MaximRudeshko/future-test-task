@@ -1,0 +1,10 @@
+.btn-group{
+    width:100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-group .btn{
+    flex: 0 0 40%;
+}

@@ -1,26 +1,25 @@
 import React from 'react';
 import './Table.css'
 
+const Table = ({sort, onSort, sortField, data, onRowSelect}) => {
 
-const Table = (props) => {
-
-    const arrowType = props.sort === 'desc' ? <i className='fa fa-arrow-down ml-1' aria-hidden="true"></i> : <i className='fa fa-arrow-up ml-1' aria-hidden="true"></i>;
+    const arrowType = sort === 'desc' ? <i className='fa fa-arrow-down ml-1' aria-hidden="true"></i> : <i className='fa fa-arrow-up ml-1' aria-hidden="true"></i>;
 
     return (
         <table className="table-bordered table table-hover">
             <thead className = 'bg-primary'>
                 <tr>
-                <th onClick = {props.onSort.bind(null, 'id')}>ID{props.sortField === 'id' ? arrowType : null}</th>
-                <th onClick = {props.onSort.bind(null, 'firstName')}>First Name{props.sortField === 'firstName' ? arrowType : null}</th>
-                <th onClick = {props.onSort.bind(null, 'lastName')}>Last Name{props.sortField === 'lastName' ? arrowType : null}</th>
-                <th onClick = {props.onSort.bind(null, 'email')}>Email{props.sortField === 'email' ? arrowType : null}</th>
-                <th onClick = {props.onSort.bind(null, 'phone')}>Phone{props.sortField === 'phone' ? arrowType : null}</th>
+                <th onClick = {onSort.bind(null, 'id')}>ID{sortField === 'id' ? arrowType : null}</th>
+                <th onClick = {onSort.bind(null, 'firstName')}>First Name{sortField === 'firstName' ? arrowType : null}</th>
+                <th onClick = {onSort.bind(null, 'lastName')}>Last Name{sortField === 'lastName' ? arrowType : null}</th>
+                <th onClick = {onSort.bind(null, 'email')}>Email{sortField === 'email' ? arrowType : null}</th>
+                <th onClick = {onSort.bind(null, 'phone')}>Phone{sortField === 'phone' ? arrowType : null}</th>
                 </tr>
             </thead>
             <tbody>
-                {props.data.map(row => {
+               {data ?  data.map(row => {
                     return (
-                        <tr key = {row.id + Math.random()*10} onClick = {props.onRowSelect.bind(null, row)} >
+                        <tr key = {row.id + Math.random()*10} onClick = {() => onRowSelect(row)} >
                             <th>{row.id}</th>
                             <th>{row.firstName}</th>
                             <th>{row.lastName}</th>
@@ -28,7 +27,7 @@ const Table = (props) => {
                             <th>{row.phone}</th>
                         </tr>
                     )
-                })}
+                }) : null }
             </tbody>
         </table>
     )

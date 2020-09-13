@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import './App.css'
 import ReactPaginate from 'react-paginate'
 import Loader from '../Loader/Loader';
 import Table from '../Table/Table';
 import PersonDetails from '../PersonDetails/PersonDetails';
 import DataSelect from '../DataSelect/DataSelect';
 import FilterPanel from '../FilterPanel/FilterPanel';
+import AddItemBtn from '../AddItem/AddItem';
+import Modal from '../modal/Modal';
 
 
  export default class App extends Component{
@@ -18,17 +21,26 @@ import FilterPanel from '../FilterPanel/FilterPanel';
     row:null,
     dataSelected:false,
     currentPage: 0,
-    search: ''
+    search: '',
+    isModalOpen: false,
+    error: false
   }
 
-
   async fetchData(url){
-    const response = await fetch(url);
-    const data = await response.json();
-    this.setState({
-      data : _.orderBy(data, this.state.sortField, this.state.sort),
-      loading : false
-    })
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      this.setState({
+        data : _.orderBy(data, this.state.sortField, this.state.sort),
+        loading : false
+      })
+    } catch (error) {
+      this.setState({
+        error:true,
+        loading:false
+      })
+    }
+
   }
 
   onSort = sortField => {
@@ -84,9 +96,32 @@ import FilterPanel from '../FilterPanel/FilterPanel';
     })
   }
 
+  toggleModal = () => {
+    this.setState(({isModalOpen}) => {
+      return{
+        isModalOpen:!isModalOpen
+      }
+    })
+  }
+
+  addItem = (item) => {
+    const newItem = item
+
+    this.setState(({data}) => {
+      const newArr = [newItem, ...data]
+      return {
+        data: newArr
+      }
+    })
+
+    this.toggleModal()
+  }
 
   render(){
-    if(!this.state.dataSelected){
+
+    const {dataSelected, currentPage, loading, sort, sortField, data, row, isModalOpen, error} = this.state
+
+    if(!dataSelected){
       return(
         <div className = 'container'>
           <DataSelect onDataSelected = {this.onDataSelected}/>
@@ -100,34 +135,37 @@ import FilterPanel from '../FilterPanel/FilterPanel';
 
     const pageCount = Math.ceil(filteredData.length / pageSize)
 
-    const view = _.chunk(filteredData, pageSize)[this.state.currentPage]
+    const view = _.chunk(filteredData, pageSize)[currentPage]
+
+    if(error){
+      return <h2 className = 'error'>Oops... Something has gone wrong</h2>
+    }
 
     return (
       <div className = 'container'>
-        
-        {this.state.loading 
+        {loading 
           ? <Loader/> 
           : <React.Fragment>
-              <FilterPanel onSearch = {this.onSearch}/>
+              <div className = 'row w-100 m-0'>
+                  <FilterPanel onSearch = {this.onSearch}/>
+                  <AddItemBtn openModal = {this.toggleModal}/>
+              </div>
               <Table 
                   data = {view} 
                   onSort = {this.onSort}
-                  sort = {this.state.sort}
-                  sortField = {this.state.sortField}
+                  sort = {sort}
+                  sortField = {sortField}
                   onRowSelect = {this.onRowSelect}
               />
             </React.Fragment>
         }                 
 
-        {this.state.data.length > pageSize 
+        {data.length > pageSize && view && pageCount > 1 
           ? <ReactPaginate
           previousLabel={'previous'}
           nextLabel={'next'}
-          breakLabel={'...'}
-          breakClassName={'break-me'}
           pageCount={pageCount}
-          marginPagesDisplayed={5}
-          pageRangeDisplayed={20}
+          pageRangeDisplayed={pageCount}
           onPageChange={this.onPageChange}
           containerClassName={'pagination'}
           activeClassName={'active'}
@@ -135,13 +173,14 @@ import FilterPanel from '../FilterPanel/FilterPanel';
           pageLinkClassName={'page-link'}
           previousClassName={'page-link'}
           nextClassName={'page-link'}
-          forcePage = {this.state.currentPage}
+          forcePage = {currentPage}
         /> : null
         }          
         
-        {this.state.row 
-          ? <PersonDetails person = {this.state.row}/> : null}
+        {row 
+          ? <PersonDetails person = {row}/> : null}
 
+        <Modal isModalOpen = {isModalOpen} closeModal = {this.toggleModal} addItem = {this.addItem}/>
       </div>
     )
   }
