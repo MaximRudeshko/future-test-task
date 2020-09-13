@@ -19,7 +19,7 @@ const Table = ({sort, onSort, sortField, data, onRowSelect}) => {
             <tbody>
                {data ?  data.map(row => {
                     return (
-                        <tr key = {row.id + Math.random()*10} onClick = {() => onRowSelect(row)} >
+                        <tr key = {row.id + Math.random()*1000} onClick = {() => onRowSelect(row)} >
                             <th>{row.id}</th>
                             <th>{row.firstName}</th>
                             <th>{row.lastName}</th>

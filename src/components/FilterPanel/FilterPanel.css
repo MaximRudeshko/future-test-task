@@ -4,8 +4,9 @@
 }
 
 .input-group{
-    /* transform:translateX(-101%); */
-    transition: all .2s ease;
+    padding-left: 3px;
+    transform:translateX(-110%);
+    transition: all .4s ease;
 }
 
 .input-group.active{
@@ -16,7 +17,8 @@
     font-size: 30px;
     color:#007bff;
     cursor:pointer;
-    display: block;
+    display: flex;
+    align-items: center;
 }
 .search.hide{
     display: none;

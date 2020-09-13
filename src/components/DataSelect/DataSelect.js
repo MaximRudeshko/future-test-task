@@ -9,7 +9,7 @@ const DataSelect = ({onDataSelected}) => {
 
     return(
         <React.Fragment>
-            <h1 className = 'p-5 d-flex justify-content-center'>Future  Test Task</h1>
+            <h1 className = 'p-5 d-flex justify-content-center'>Future Test Task</h1>
             <div className = 'btn-group'>
                 <button className = 'btn btn-success' onClick = {() => onDataSelected(smallData)}>Small Data</button>
                 <button className = 'btn btn-primary' onClick = {() => onDataSelected(bigData)}>Big Data</button>

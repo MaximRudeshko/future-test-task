@@ -8,6 +8,10 @@ thead th{
     color:#fff;
 }
 
+tr{
+    transition: all .1s ease;
+}
+
 .fa{
     font-size: 10px;
 }
